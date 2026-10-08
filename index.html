@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Reel — free movies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1521;--panel:#12263a;--panel2:#183049;--ink:#eef2f6;--mute:#8fa3b8;--amber:#f5b73b;--teal:#3fc6b7;--line:#1f3a55;--r:14px}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 600px at 80% -10%,#15304a 0,transparent 60%),var(--bg);background-attachment:fixed;color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+a{color:inherit}button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+h1,h2,h3,.brand{font-family:Oswald,Impact,sans-serif;font-weight:700;letter-spacing:.01em}
+header{position:sticky;top:0;z-index:5;display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:12px 4vw;background:rgba(10,21,33,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{font-size:26px;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px;margin-right:10px}
+.brand::before{content:"";width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 50% 50%,var(--bg) 0 18%,var(--amber) 19% 100%);box-shadow:0 0 14px rgba(245,183,59,.55)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav button{background:none;border:0;color:var(--mute);padding:8px 14px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+nav button:hover{color:var(--ink)}
+nav button[aria-current=true]{color:#1b1304;background:var(--amber);font-weight:600}
+.spacer{flex:1}
+input[type=search]{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:9px 16px;border-radius:999px;width:min(280px,100%)}
+input[type=search]::placeholder{color:var(--mute)}
+.btn{background:none;border:1px solid transparent;color:var(--ink);padding:10px 18px;border-radius:999px;text-decoration:none;display:inline-block;transition:transform .12s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.solid{background:var(--amber);color:#1b1304;font-weight:700}
+.btn.line{border-color:var(--line);background:rgba(255,255,255,.04)}
+.btn.line:hover{background:rgba(255,255,255,.1)}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:4vw;align-items:center;margin:20px 4vw 6px;padding:clamp(20px,4vw,48px);border-radius:24px;background:linear-gradient(120deg,rgba(24,48,73,.9),rgba(18,38,58,.55));border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.hero h1{font-size:clamp(34px,5.5vw,64px);line-height:1.02;margin-bottom:12px}
+.hero p{color:var(--mute);max-width:56ch;margin-bottom:22px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.hero .meta{display:inline-block;color:var(--teal);margin-bottom:12px;font-weight:600;font-size:14px;padding:4px 12px;border:1px solid rgba(63,198,183,.4);border-radius:999px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+section.row{padding:30px 0 0 4vw}
+section.row h2{font-size:22px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+section.row h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--line),transparent);margin-right:4vw}
+.track{display:flex;gap:14px;overflow-x:auto;padding:4px 4vw 16px 0;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.card{flex:0 0 156px;scroll-snap-align:start;background:none;border:0;color:inherit;text-align:left;padding:0;transition:transform .18s}
+.card:hover{transform:translateY(-5px)}
+.card span{display:block;font-size:14px;margin-top:8px;line-height:1.3;font-weight:600}
+.card small{color:var(--mute);font-weight:400}
+.ph{position:relative;width:156px;aspect-ratio:2/3;border-radius:var(--r);overflow:hidden;background:linear-gradient(160deg,#27425c,#122639 65%);display:flex;align-items:flex-end;padding:12px;box-shadow:0 12px 28px -12px rgba(0,0,0,.8)}
+.ph[data-genre=Horror]{background:linear-gradient(160deg,#6b2233,#1b0d14 70%)}
+.ph[data-genre=Sci-fi]{background:linear-gradient(160deg,#15527e,#0b1b33 70%)}
+.ph[data-genre=Comedy]{background:linear-gradient(160deg,#a56d14,#2b1c06 70%)}
+.ph[data-genre="Film noir"]{background:linear-gradient(160deg,#4b515c,#111418 70%)}
+.ph[data-genre=Classics]{background:linear-gradient(160deg,#5b4778,#1a1426 70%)}
+.ph[data-genre=Series],.ph[data-genre="Classic TV"]{background:linear-gradient(160deg,#25706a,#0c2220 70%)}
+.ph[data-genre=YouTube]{background:linear-gradient(160deg,#8a2424,#240b0b 70%)}
+.ph b{font-family:Oswald,sans-serif;font-size:17px;line-height:1.15;position:relative;z-index:0}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.ph::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);z-index:2;pointer-events:none}
+.card:hover .ph::after{box-shadow:inset 0 0 0 2px var(--amber)}
+.ph.big{width:100%;aspect-ratio:4/3;font-size:28px;padding:20px}
+.ph.big b{font-size:clamp(22px,3vw,36px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:24px 16px;padding:24px 4vw}
+.grid .card{width:100%;flex:none}.grid .ph{width:100%}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--mute);padding:7px 16px;border-radius:999px;transition:background .15s}
+.chip:hover{color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--amber);color:#1b1304;border-color:var(--amber);font-weight:600}
+.link-card{flex:0 0 240px;border:1px solid var(--line);border-radius:var(--r);padding:18px;text-decoration:none;background:linear-gradient(150deg,var(--panel2),var(--panel));transition:transform .18s,border-color .18s}
+.link-card:hover{transform:translateY(-4px);border-color:var(--amber)}
+.link-card b{display:block;font-family:Oswald,sans-serif;font-size:20px;margin-bottom:2px}
+.link-card small{color:var(--mute)}
+.note{color:var(--mute);padding:28px 4vw}
+dialog{border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--ink);width:min(980px,96vw);padding:0;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7)}
+dialog::backdrop{background:rgba(3,8,14,.82);backdrop-filter:blur(4px)}
+.player{aspect-ratio:16/9;width:100%;border:0;background:#000;display:block}
+.info{padding:18px 24px 24px}
+.info h3{font-size:26px;margin-bottom:6px}
+.info p{color:var(--mute);max-height:6em;overflow:auto;margin-bottom:16px}
+footer{padding:36px 4vw;color:var(--mute);font-size:14px;border-top:1px solid var(--line);margin-top:40px;text-align:center}
+@media(max-width:760px){.hero{grid-template-columns:1fr;margin:14px 4vw 0;border-radius:18px}.hero .ph{order:-1}.card{flex-basis:132px}.ph{width:132px}header{gap:10px}.spacer{display:none}input[type=search]{flex:1}}
+@media(prefers-reduced-motion:no-preference){dialog[open]{animation:pop .2s ease-out}@keyframes pop{from{transform:scale(.97);opacity:0}}.hero{animation:rise .5s ease-out}@keyframes rise{from{opacity:0;transform:translateY(8px)}}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="#" id="home">OPEN REEL</a>
+  <nav aria-label="Main">
+    <button data-view="home" aria-current="true">Home</button>
+    <button data-view="movies">Movies</button>
+    <button data-view="tv">TV Shows</button>
+    <button data-view="yt">YouTube</button>
+    <button data-view="list">My List</button>
+  </nav>
+  <span class="spacer"></span>
+  <input type="search" id="q" placeholder="Search free movies" aria-label="Search free movies">
+  <button class="btn line" id="surprise">Surprise me</button>
+</header>
+
+<main id="main"></main>
+
+<dialog id="dlg">
+  <iframe class="player" id="frame" allowfullscreen title="Movie player"></iframe>
+  <div class="info">
+    <h3 id="dt"></h3>
+    <p id="dd"></p>
+    <div class="actions">
+      <button class="btn solid" id="dlist">Add to My List</button>
+      <a class="btn line" id="dsrc" target="_blank" rel="noopener">Open on Internet Archive</a>
+      <button class="btn line" id="dclose">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<footer>Films here are public-domain or openly licensed and stream from the Internet Archive. Check a title's rights in your country before relying on it.</footer>
+
+<script>
+const IA = "https://archive.org";
+const ROWS = [
+  {t:"Feature films", q:"collection:feature_films"},
+  {t:"Sci-fi and horror", q:"collection:SciFi_Horror"},
+  {t:"Film noir", q:"collection:film_noir"},
+  {t:"Silent era", q:"collection:silent_films"},
+  {t:"Comedy", q:"collection:comedy_films"}
+];
+const OTHER = [
+  {n:"Tubi", u:"https://tubitv.com/movies", d:"Free with ads"},
+  {n:"Pluto TV", u:"https://pluto.tv", d:"Free live channels and on-demand"},
+  {n:"The Roku Channel", u:"https://therokuchannel.roku.com", d:"Free with ads"},
+  {n:"Plex", u:"https://watch.plex.tv/movies-and-shows", d:"Free movies and shows with ads"}
+];
+const CAT = `Night of the Living Dead|1968|Horror|Strangers barricade a farmhouse as the dead rise. The film that defined the modern zombie.
+Nosferatu|1922|Horror|A silent-era vampire stalks a shipping town in this landmark of German expressionism.
+The Cabinet of Dr. Caligari|1920|Horror|A sleepwalker and his sinister showman haunt a distorted, painted-set nightmare.
+Phantom of the Opera|1925|Horror|A disfigured composer terrorizes the Paris Opera, with Lon Chaney in the title role.
+Carnival of Souls|1962|Horror|After a car crash, a woman is pulled toward an abandoned pavilion.
+Dementia 13|1963|Horror|An heiress schemes her way into a family haunted by a drowned child.
+Hxan|1922|Horror|A dark, inventive silent film about witchcraft through the ages.
+The Last Man on Earth|1964|Horror|Vincent Price is the lone survivor of a plague that turns people into creatures.
+Plan 9 from Outer Space|1959|Sci-fi|Aliens raise the dead in the famously strange cult classic.
+Metropolis|1927|Sci-fi|Fritz Lang's towering vision of a divided future city.
+A Trip to the Moon|1902|Sci-fi|The pioneering short film that sent a rocket into the Moon's eye.
+The Brain That Wouldn't Die|1962|Sci-fi|A surgeon keeps his fiancee's head alive in his lab.
+Teenagers from Outer Space|1959|Sci-fi|An alien fugitive hides on Earth while hunters close in.
+The General|1926|Comedy|Buster Keaton chases his stolen locomotive across Civil War lines.
+Sherlock Jr.|1924|Comedy|A projectionist dreams himself into the movie he is showing.
+The Kid|1921|Comedy|Charlie Chaplin raises an abandoned child in the slums.
+Safety Last!|1923|Comedy|Harold Lloyd dangles from a clock in the most famous silent stunt.
+The Gold Rush|1925|Comedy|Chaplin's Tramp goes north in search of fortune.
+His Girl Friday|1940|Comedy|A newspaper editor tries to win back his star reporter and ex-wife.
+The Little Shop of Horrors|1960|Comedy|A florist's assistant raises a plant that demands blood.
+Charade|1963|Mystery|Audrey Hepburn and Cary Grant race through Paris after a hidden fortune.
+D.O.A.|1950|Film noir|A man poisoned with a slow toxin has one day to find his own killer.
+Detour|1945|Film noir|A hitchhiker's bad luck spirals into a trap of his own making.
+The Stranger|1946|Film noir|Orson Welles plays a hidden war criminal in a quiet Connecticut town.
+Scarlet Street|1945|Film noir|A mild cashier falls for a woman who is not what she seems.
+Battleship Potemkin|1925|Classics|Eisenstein's mutiny drama and its Odessa steps sequence.
+The Hunchback of Notre Dame|1923|Classics|Lon Chaney brings Quasimodo to life in medieval Paris.
+Nanook of the North|1922|Classics|An early documentary following an Inuit family in the Arctic.
+Salt of the Earth|1954|Classics|Mine workers and their families strike for fair treatment.`.split("\n").map((l,i)=>{const [title,year,genre,desc]=l.split("|");return {id:"t"+i,title:title.replace("Hxan","H\u00e4xan"),year,genre,desc,ia:null}});
+const SHOWS = `Rocky Jones, Space Ranger|1954|Series|A space patrol hero defends the Solar System in this 1950s sci-fi serial.
+Captain Video and His Video Rangers|1949|Series|One of the first science-fiction shows on television.
+Commando Cody: Sky Marshal of the Universe|1953|Series|A rocket-suited hero fights an invader from the Moon.
+The Adventures of Sherlock Holmes|1954|Series|Early television mysteries following the famous detective.`.split("\n").map((l,i)=>{const [title,year,genre,desc]=l.split("|");return {id:"s"+i,title,year,genre,desc,ia:null}});
+// YouTube: paste your YouTube Data API key and the channel IDs (start with UC) of OFFICIAL channels that upload full movies or series with permission.
+const YT_KEY = "";
+const YT_CHANNELS = [ /* {name:"Channel name", id:"UCxxxxxxxxxxxxxxxxxxxxxx"} */ ];
+const YT_LINKS = [
+  {n:"Free movies on YouTube", d:"Official free-with-ads movies", u:"https://www.youtube.com/movies"},
+  {n:"أفلام عربية كاملة", d:"Arabic full movies: search on YouTube", u:"https://www.youtube.com/results?search_query="+encodeURIComponent("فيلم عربي كامل")},
+  {n:"مسلسلات عربية كاملة", d:"Arabic series: search on YouTube", u:"https://www.youtube.com/results?search_query="+encodeURIComponent("مسلسل عربي كامل")}
+];
+const GENRES=["Horror","Sci-fi","Comedy","Film noir","Classics"];
+async function resolve(m){
+  if(m.ia) return m.ia;
+  try{const r=await search(`title:("${m.title.replace(/["\\]/g,"")}")`,1);if(r[0]){m.ia=r[0].id;return m.ia}}catch(e){}
+  return null;
+}
+async function resolveAll(){
+  let i=0;const run=async()=>{const ALL=[...CAT,...SHOWS];while(i<ALL.length){const m=ALL[i++];const id=await resolve(m);
+    if(id)document.querySelectorAll(`[data-id="${m.id}"] img.p`).forEach(im=>{im.src=thumb(id)})}};
+  await Promise.all([run(),run(),run()]);
+}
+const $ = s => document.querySelector(s);
+const main = $("#main"), dlg = $("#dlg");
+
+const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const first = v => Array.isArray(v) ? v[0] : v;
+const thumb = id => `${IA}/services/img/${encodeURIComponent(id)}`;
+
+async function search(q, n = 30) {
+  const u = `${IA}/advancedsearch.php?q=${encodeURIComponent(q + " AND mediatype:movies")}&fl[]=identifier&fl[]=title&fl[]=year&fl[]=description&sort[]=downloads+desc&rows=${n}&output=json`;
+  const r = await fetch(u);
+  if (!r.ok) throw new Error("Search failed");
+  const j = await r.json();
+  return j.response.docs.map(d => ({id: d.identifier, title: first(d.title) || d.identifier, year: first(d.year) || "", desc: (first(d.description) || "").replace(/<[^>]*>/g, "")}));
+}
+
+const card = m => `<button class="card" data-id="${esc(m.id)}"><div class="ph" data-genre="${esc(m.genre)}"><b>${esc(m.title)}</b><img class="p" loading="lazy" alt="" ${m.pic?`src="${esc(m.pic)}"`:m.ia?`src="${thumb(m.ia)}"`:""} onerror="this.remove()"></div><span>${esc(m.title)}<br><small>${esc(m.year)} · ${esc(m.genre)}</small></span></button>`;
+const byGenre = g => CAT.filter(m => m.genre === g);
+let rows = [], cur = null, view = "home", genre = "All", list = [];
+try { list = JSON.parse(localStorage.getItem("reel-list") || "[]"); } catch (e) {}
+const save = () => { try { localStorage.setItem("reel-list", JSON.stringify(list)); } catch (e) {} };
+const inList = id => list.includes(id);
+const find = id => CAT.find(m => m.id === id) || SHOWS.find(m => m.id === id) || (window.__f || []).find(m => m.id === id);
+const chips = () => `<div class="chips">${["All",...GENRES].map(g=>`<button class="chip" data-g="${g}" aria-pressed="${g===genre}">${g}</button>`).join("")}</div>`;
+
+function hero(m){
+  return `<div class="hero"><div><div class="meta">${esc(m.year)} · ${esc(m.genre)} · Free to watch</div><h1>${esc(m.title)}</h1><p>${esc(m.desc)}</p><div class="actions"><button class="btn solid" data-id="${m.id}">Play movie</button><button class="btn line" data-info="${m.id}">More info</button></div></div><div class="ph big" data-genre="${esc(m.genre)}"><b>${esc(m.title)}</b><img class="p" alt="" ${m.ia?`src="${thumb(m.ia)}"`:""} onerror="this.remove()"></div></div>`;
+}
+function renderHome(){
+  const h = CAT[Math.floor(Math.random()*CAT.length)];
+  const early = CAT.filter(m => +m.year < 1930);
+  const sets = [["Trending now",[...CAT].sort(()=>Math.random()-.5).slice(0,12)],["Horror",byGenre("Horror")],["Sci-fi",byGenre("Sci-fi")],["Comedy",byGenre("Comedy")],["Film noir",byGenre("Film noir")],["Silent era",early]];
+  main.innerHTML = hero(h)+sets.map(([t,i])=>`<section class="row"><h2>${t}</h2><div class="track">${i.map(card).join("")}</div></section>`).join("")+
+   `<section class="row"><h2>More from the Internet Archive</h2><div class="track" id="live"><p class="note" style="padding:0">Loading more films...</p></div></section>`+
+   `<section class="row"><h2>Also free on other services</h2><div class="track">${OTHER.map(o=>`<a class="link-card" href="${o.u}" target="_blank" rel="noopener"><b>${o.n}</b><small>${o.d}</small><br><small>Opens their site</small></a>`).join("")}</div></section>`;
+  loadLive();
+}
+async function loadLive(){
+  const el=$("#live"); if(!el) return;
+  try{
+    const r=await search("collection:feature_films",24);
+    window.__f=(window.__f||[]).concat(r.map(x=>({id:"ia:"+x.id,ia:x.id,title:x.title,year:x.year,genre:"Feature",desc:x.desc})));
+    el.innerHTML=r.map(x=>card({id:"ia:"+x.id,ia:x.id,title:x.title,year:x.year,genre:"Feature"})).join("");
+  }catch(e){el.innerHTML='<p class="note" style="padding:0">Could not reach the Internet Archive. The built-in films above still show; playback needs an internet connection.</p>'}
+}
+function renderGrid(title, items, empty, withChips){
+  main.innerHTML=`<section class="row" style="padding-bottom:0"><h2>${esc(title)}</h2>${withChips?chips():""}</section>`+(items.length?`<div class="grid">${items.map(card).join("")}</div>`:`<p class="note">${empty}</p>`);
+}
+async function loadYT(){
+  const el=$("#ytrow"); if(!el) return;
+  if(!YT_KEY||!YT_CHANNELS.length){el.innerHTML='<p class="note" style="padding:0">No official channels added yet. Open index.html, add your YouTube API key to YT_KEY and official channel IDs to YT_CHANNELS, then reload.</p>';return;}
+  let out=[];
+  for(const c of YT_CHANNELS){
+    try{
+      const r=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=24&playlistId=UU${c.id.slice(2)}&key=${YT_KEY}`);
+      const j=await r.json();
+      out=out.concat((j.items||[]).map(it=>({id:"yt:"+it.snippet.resourceId.videoId,yt:it.snippet.resourceId.videoId,title:it.snippet.title,year:c.name,genre:"YouTube",desc:(it.snippet.description||"").slice(0,300),pic:(it.snippet.thumbnails.medium||{}).url})));
+    }catch(e){}
+  }
+  window.__f=(window.__f||[]).concat(out);
+  el.innerHTML=out.length?out.map(card).join(""):'<p class="note" style="padding:0">Could not load videos. Check the API key and channel IDs.</p>';
+}
+function renderYT(){
+  main.innerHTML=`<section class="row"><h2>YouTube</h2><p class="note" style="padding:0 4vw 14px 0">Only add channels that own the rights to what they upload. Many "full movie" uploads are unauthorised, and those are left out.</p></section><section class="row"><h2>Find on YouTube</h2><div class="track">${YT_LINKS.map(o=>`<a class="link-card" href="${o.u}" target="_blank" rel="noopener" dir="auto"><b>${o.n}</b><small>${o.d}</small></a>`).join("")}</div></section><section class="row"><h2>From your official channels</h2><div class="track" id="ytrow"></div></section>`;
+  loadYT();
+}
+async function renderTV(){
+  main.innerHTML=`<section class="row"><h2>TV Shows</h2><div class="track">${SHOWS.map(card).join("")}</div></section><section class="row"><h2>More classic TV</h2><div class="track" id="tvlive"><p class="note" style="padding:0">Loading more shows...</p></div></section><section class="row"><h2>Series on YouTube</h2><div class="track">${YT_LINKS.slice(2).map(o=>`<a class="link-card" href="${o.u}" target="_blank" rel="noopener" dir="auto"><b>${o.n}</b><small>${o.d}</small></a>`).join("")}</div></section>`;
+  resolveAll();
+  try{
+    const r=await search("collection:classic_tv",24);
+    const items=r.map(x=>({id:"ia:"+x.id,ia:x.id,title:x.title,year:x.year,genre:"Classic TV",desc:x.desc}));
+    window.__f=(window.__f||[]).concat(items);
+    const el=$("#tvlive"); if(el) el.innerHTML=items.map(card).join("")||"";
+  }catch(e){const el=$("#tvlive"); if(el) el.innerHTML='<p class="note" style="padding:0">Could not reach the Internet Archive.</p>';}
+}
+function setView(v){
+  view=v;
+  document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-current",b.dataset.view===v));
+  if(v==="home") renderHome();
+  else if(v==="tv") renderTV();
+  else if(v==="yt") renderYT();
+  else if(v==="movies") renderGrid("Movies",genre==="All"?CAT:byGenre(genre),"No films here.",true);
+  else renderGrid("My List",list.map(find).filter(Boolean),"Nothing saved yet. Open a movie and choose Add to My List.");
+  if(v==="movies"||v==="list") resolveAll();
+}
+async function open(id){
+  const m=find(id); if(!m) return; cur=m;
+  $("#dt").textContent=`${m.title}${m.year?" ("+m.year+")":""}`; $("#dd").textContent=m.desc||"";
+  $("#frame").src="about:blank"; syncBtn(); dlg.showModal();
+  if(m.yt){ $("#frame").src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(m.yt)}`; $("#dsrc").href=`https://www.youtube.com/watch?v=${encodeURIComponent(m.yt)}`; $("#dsrc").textContent="Open on YouTube"; return; }
+  $("#dsrc").textContent="Open on Internet Archive";
+  const ia=await resolve(m);
+  if(cur!==m) return;
+  if(ia){ $("#frame").src=`${IA}/embed/${encodeURIComponent(ia)}`; $("#dsrc").href=`${IA}/details/${encodeURIComponent(ia)}`; }
+  else { $("#dsrc").href=`${IA}/search?query=${encodeURIComponent(m.title)}`; $("#dd").textContent+="  Could not find a free copy to play here. Use the Internet Archive button to search."; }
+}
+function syncBtn(){ $("#dlist").textContent=inList(cur.id)?"Remove from My List":"Add to My List"; }
+function toggle(id){ const i=list.indexOf(id); i>=0?list.splice(i,1):list.push(id); save(); }
+function closeDlg(){ dlg.close(); $("#frame").src="about:blank"; }
+
+main.addEventListener("click",e=>{
+  const g=e.target.closest("[data-g]"); if(g){genre=g.dataset.g; return setView("movies");}
+  const inf=e.target.closest("[data-info]"); if(inf){return open(inf.dataset.info);}
+  const c=e.target.closest("[data-id]"); if(c) open(c.dataset.id);
+});
+$("#dlist").onclick=()=>{toggle(cur.id);syncBtn();if(view==="list")setView("list");};
+$("#dclose").onclick=closeDlg;
+dlg.addEventListener("close",()=>{$("#frame").src="about:blank";});
+dlg.addEventListener("click",e=>{if(e.target===dlg)closeDlg();});
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{$("#q").value="";setView(b.dataset.view);});
+$("#home").onclick=e=>{e.preventDefault();$("#q").value="";setView("home");};
+$("#surprise").onclick=()=>open(CAT[Math.floor(Math.random()*CAT.length)].id);
+$("#q").addEventListener("input",e=>{
+  const v=e.target.value.trim().toLowerCase();
+  if(!v) return setView("home");
+  renderGrid(`Results for "${esc(e.target.value.trim())}"`,[...CAT,...SHOWS].filter(m=>m.title.toLowerCase().includes(v)||m.genre.toLowerCase().includes(v)),"No titles match. Try a genre like horror or comedy.");
+  resolveAll();
+});
+setView("home"); resolveAll();
+</script>
+</body>
+</html>
